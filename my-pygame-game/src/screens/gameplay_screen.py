@@ -141,6 +141,8 @@ class GameplayScreen:
         pygame.display.flip()
 
         pygame.time.wait(2000)  # Wait for 2 seconds to show the victory message
+
+        self.player.health = int(self.player.health + self.initial_health * 0.3)  # Increase player health by 30% of initial health after winning
         
         # After winning, switch back to the starting area screen
         from screens.starting_area_screen import StartingAreaScreen
@@ -202,9 +204,16 @@ class GameplayScreen:
 
     def enemy_turn(self):
         """Handle the enemy's turn."""
+        if self.enemy.health <= 0:
+            self.action_text = "Enemy is defeated"
+            self.action_color = (255, 0, 0)  # Red color for enemy actions
+            print("Enemy is defeated")
+            self.player_turn = True  # End enemy's turn
+            return
+
         action = random.choice(["attack", "heal"])
         if action == "attack":
-            damage = random.randint(5, 15)  # Random damage value
+            damage = random.randint(1, 5)  # Random damage value
             if self.player.shield > 0:
                 if damage > self.player.shield:
                     remaining_damage = damage - self.player.shield
@@ -219,7 +228,7 @@ class GameplayScreen:
             self.action_color = (255, 0, 0)  # Red color for enemy actions
             print(f"Enemy attacked! Damage: {damage}, Player HP: {self.player.health}")
         elif action == "heal":
-            heal_amount = 5  # Fixed heal value
+            heal_amount = 2  # Fixed heal value
             self.enemy.health += heal_amount
             self.action_text = f"Enemy healed! Heal: {heal_amount}"
             self.action_color = (255, 0, 0)  # Red color for enemy actions
