@@ -9,6 +9,7 @@ class TavernScreen:
         self.game = game
         self.font = pygame.font.Font(None, 40)  # Font for title
         self.info_font = pygame.font.Font(None, 30)  # Font for instructions
+        self.message_font = pygame.font.Font(None, 30)  # Font for messages
 
         # Load background
         self.background = pygame.image.load("my-pygame-game/src/assets/tavern.jpg")
@@ -35,6 +36,9 @@ class TavernScreen:
 
         self.start_x_tavern = (1200 - (len(self.all_cards) * self.card_spacing)) // 2
         self.card_y_tavern = 250
+
+        # Message to display on the screen
+        self.message = ""
 
     def load_card_images(self):
         """Loads images for all predefined cards."""
@@ -69,21 +73,23 @@ class TavernScreen:
         """Swaps selected player card with a tavern card if it's not a duplicate."""
         if self.selected_card_index is not None and self.selected_tavern_card_index is not None:
             new_card = self.all_cards[self.selected_tavern_card_index]
+            player_card_name = self.player_cards[self.selected_card_index].name  # Store the player card name
 
-            # Proveravamo da li igrač već ima ovu kartu
+            # Check if the player already has this card
             if any(card.name == new_card.name for card in self.player_cards):
-                print(f"Player already has {new_card.name}. Cannot add duplicate.")
+                self.message = f"Player already has {new_card.name}. Cannot add duplicate."
+                print(self.message)
             else:
-                # Izvršavamo zamenu
+                # Perform the swap
                 self.player_cards[self.selected_card_index], self.all_cards[self.selected_tavern_card_index] = (
                     self.all_cards[self.selected_tavern_card_index], self.player_cards[self.selected_card_index]
                 )
-                self.save_cards()  # Čuvamo ažurirane karte
+                self.save_cards()  # Save the updated cards
+                self.message = f"Swapped {player_card_name} with {new_card.name}."  # Use the stored player card name
 
-            # Resetujemo selekciju nakon pokušaja zamene
+            # Reset selection after attempting the swap
             self.selected_card_index = None
             self.selected_tavern_card_index = None
-
 
     def handle_events(self):
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -175,3 +181,8 @@ class TavernScreen:
         # Instructions at the bottom
         info_text = self.info_font.render("Click on a player card, then a tavern card to swap | E: Exit", True, (255, 255, 255))
         screen.blit(info_text, ((1200 - info_text.get_width()) // 2, 750))
+
+        # Draw message at the top
+        if self.message:
+            message_text = self.message_font.render(self.message, True, (255, 255, 255))
+            screen.blit(message_text, ((1200 - message_text.get_width()) // 2, 100))

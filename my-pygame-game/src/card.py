@@ -71,7 +71,7 @@ def load_cards_from_json(file_path):
 # Function to get predefined cards
 def get_predefined_cards():
     return [
-        CardFactory.create_card("attack", "Fireball", 5, "fireball.png"),
+        CardFactory.create_card("attack", "Fireball", 20, "fireball.png"),
         CardFactory.create_card("heal", "Health Potion", 5, "health_potion.png"),
         CardFactory.create_card("shield", "Wooden Shield", 1, "wooden_shield.png"),
         CardFactory.create_card("shield", "Iron Shield", 5, "iron_shield.png"),

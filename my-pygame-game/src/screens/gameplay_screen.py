@@ -6,9 +6,10 @@ from enemy import EnemyFactory, BossEnemy  # Import BossEnemy and EnemyFactory
 from card import CardFactory, load_cards_from_json, AttackCard, HealCard, ShieldCard  # Import CardFactory, load_cards_from_json, AttackCard, HealCard, ShieldCard
 
 class GameplayScreen:
-    def __init__(self, game, player):
+    def __init__(self, game, player, level=1):
         self.game = game
         self.player = player
+        self.level = level  # Add level attribute
         self.player.image = pygame.transform.scale(self.player.image, (350, 350))  # Increase player size
         self.player.rect = self.player.image.get_rect()
         self.player.rect.bottom = self.game.screen.get_height()  # Position player at the bottom
@@ -144,13 +145,26 @@ class GameplayScreen:
 
         self.player.health = int(self.player.health + self.initial_health * 0.3)  # Increase player health by 30% of initial health after winning
         
+        # Increase level and change portal image
+        self.level += 1
+        if self.level > 4:
+            self.level = 1  # Reset to level 1 if it exceeds 4
+
         # After winning, switch back to the starting area screen
         from screens.starting_area_screen import StartingAreaScreen
-        self.game.change_screen(StartingAreaScreen(self.game, self.game.selected_player))  # Switch back to StartingAreaScreen
+        self.game.change_screen(StartingAreaScreen(self.game, self.game.selected_player, self.level))  # Switch back to StartingAreaScreen with updated level
 
     def create_enemy(self):
-        """Randomly create a normal enemy."""
-        enemy_type = random.randint(1, 3)  # Random enemy type
+        """Randomly create a normal enemy based on the current level."""
+        if self.level == 1:
+            enemy_type = random.randint(1, 3)  # Random enemy type for level 1
+        elif self.level == 2:
+            enemy_type = random.randint(4, 6)  # Random enemy type for level 2
+        elif self.level == 3:
+            enemy_type = random.randint(7, 9)  # Random enemy type for level 3
+        elif self.level == 4:
+            enemy_type = random.randint(10, 12)  # Random enemy type for level 4
+
         enemy = EnemyFactory.create_enemy(enemy_type, 800, 550, speed=random.randint(1, 3))
         enemy.rect = enemy.image.get_rect()  # Ensure the rect is set correctly
         enemy.rect.bottom = self.game.screen.get_height()  # Position enemy at the bottom
@@ -228,8 +242,8 @@ class GameplayScreen:
             self.action_color = (255, 0, 0)  # Red color for enemy actions
             print(f"Enemy attacked! Damage: {damage}, Player HP: {self.player.health}")
         elif action == "heal":
-            heal_amount = 2  # Fixed heal value
-            self.enemy.health += heal_amount
+            heal_amount = self.enemy.heal_amount  # Use the heal_amount attribute
+            self.enemy.heal(heal_amount)
             self.action_text = f"Enemy healed! Heal: {heal_amount}"
             self.action_color = (255, 0, 0)  # Red color for enemy actions
             print(f"Enemy healed! Heal: {heal_amount}, Enemy HP: {self.enemy.health}")
