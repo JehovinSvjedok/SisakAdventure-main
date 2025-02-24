@@ -47,6 +47,16 @@ class GameplayScreen:
             self.card_rects.append(card_image.get_rect())
             self.original_card_sizes.append(card_image.get_size())
 
+        # Initialize current cards
+        self.current_cards = []
+        self.current_card_images = []
+        self.select_random_cards()
+
+    def select_random_cards(self):
+        """Select two random cards from the deck."""
+        self.current_cards = random.sample(self.cards, 2)
+        self.current_card_images = [pygame.transform.scale(pygame.image.load(card.image_path), (250, 250)) for card in self.current_cards]
+
     def handle_events(self):
         """Handle events for the gameplay screen."""
         for event in pygame.event.get():
@@ -57,7 +67,7 @@ class GameplayScreen:
                     self.attack_enemy()
             elif event.type == pygame.MOUSEBUTTONDOWN and self.player_turn:
                 mouse_pos = event.pos
-                for i, card_rect in enumerate(self.card_rects):
+                for i, card_rect in enumerate(self.card_rects[:2]):  # Only check the first two cards
                     if card_rect.collidepoint(mouse_pos):
                         self.use_card(i)
                         break
@@ -66,14 +76,13 @@ class GameplayScreen:
 
     def handle_mouse_hover(self, mouse_pos):
         """Handle mouse hover over cards."""
-        for i, card_rect in enumerate(self.card_rects):
+        for i, card_rect in enumerate(self.card_rects[:2]):  # Only check the first two cards
             if card_rect.collidepoint(mouse_pos):
-                self.card_images[i] = pygame.transform.scale(pygame.image.load(self.cards[i].image_path), (280, 280))  # Enlarge card
-                self.card_rects[i] = self.card_images[i].get_rect(topleft=card_rect.topleft)
+                self.current_card_images[i] = pygame.transform.scale(pygame.image.load(self.current_cards[i].image_path), (280, 280))  # Enlarge card
+                self.card_rects[i] = self.current_card_images[i].get_rect(topleft=card_rect.topleft)
             else:
-                self.card_images[i] = pygame.transform.scale(pygame.image.load(self.cards[i].image_path), self.original_card_sizes[i])  # Reset to original size
-                self.card_rects[i] = self.card_images[i].get_rect(topleft=card_rect.topleft)
-
+                self.current_card_images[i] = pygame.transform.scale(pygame.image.load(self.current_cards[i].image_path), self.original_card_sizes[i])  # Reset to original size
+                self.card_rects[i] = self.current_card_images[i].get_rect(topleft=card_rect.topleft)
 
     def update(self):
         """Update game logic here (e.g., check for enemy defeat)."""
@@ -116,16 +125,17 @@ class GameplayScreen:
         screen.blit(round_text, (10, 90))
         screen.blit(enemy_hp_text, (self.game.screen.get_width() - 200, 10))
 
-        # Draw cards
+        # Draw current cards
         screen_width = self.game.screen.get_width()
-        total_card_width = len(self.card_images) * 150 + (len(self.card_images) - 1) * 10
-        card_spacing = 220  # Povećan razmak između kartica
-        start_x = (screen_width - (len(self.card_images) * 150 + (len(self.card_images) - 1) * (card_spacing - 150))) // 2
-        for i, card_image in enumerate(self.card_images):
+        card_width = 150
+        card_height = 250
+        card_spacing = 220  # Increased spacing between cards
+        total_width = 2 * card_width + card_spacing - card_width
+        start_x = (screen_width - total_width) // 2
+        for i, card_image in enumerate(self.current_card_images):
             card_rect = self.card_rects[i]
             card_rect.topleft = (start_x + i * card_spacing, 130)
             screen.blit(card_image, card_rect)
-
 
         # Draw action text at the top
         action_text = font.render(self.action_text, True, self.action_color)
@@ -193,8 +203,8 @@ class GameplayScreen:
 
     def use_card(self, card_index):
         """Use a card from the player's hand."""
-        if 0 <= card_index < len(self.cards):
-            card = self.cards[card_index]
+        if 0 <= card_index < len(self.current_cards):
+            card = self.current_cards[card_index]
             if isinstance(card, AttackCard):
                 card.use(self.enemy)
                 self.action_text = f"Player used {card.name}! Damage: {card.value}"
@@ -207,6 +217,7 @@ class GameplayScreen:
             self.action_color = (255, 255, 255)  # White color for player actions
             print(f"Used card: {card.name}")
             self.player_turn = False  # End player's turn
+            self.select_random_cards()  # Select new random cards
             self.wait_and_enemy_turn()
 
     def wait_and_enemy_turn(self):
