@@ -1,6 +1,7 @@
 import pygame
 from screens.tavern_screen import TavernScreen
 from screens.gameplay_screen import GameplayScreen
+from assets import portal_images  # Import portal_images from config
 
 class StartingAreaScreen:
     def __init__(self, game, player, level=1):
@@ -10,17 +11,12 @@ class StartingAreaScreen:
         self.level = level  # Add level attribute
 
         # Load assets
-        self.background = pygame.image.load('my-pygame-game/src/assets/main_bg.png')
-        self.tavern_image = pygame.image.load('my-pygame-game/src/assets/kuca.png')
-        self.portal_images = [
-            'my-pygame-game/src/assets/portal.png',
-            'my-pygame-game/src/assets/portal1.png'
-            #'my-pygame-game/src/assets/portal3.png',
-            #'my-pygame-game/src/assets/portal4.png'
-        ]
+        self.portal_images = portal_images
+        self.background = pygame.image.load('my-pygame-game/src/assets/main_bg.png')  # Always use this background
         self.portal_image = pygame.image.load(self.portal_images[self.level - 1])
 
         # Resize tavern and portal images
+        self.tavern_image = pygame.image.load('my-pygame-game/src/assets/kuca.png')
         self.tavern_image = pygame.transform.scale(self.tavern_image, (500, 500))
         self.portal_image = pygame.transform.scale(self.portal_image, (360, 480))
 

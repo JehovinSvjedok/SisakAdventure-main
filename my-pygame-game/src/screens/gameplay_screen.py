@@ -4,6 +4,7 @@ import os
 import time
 from enemy import EnemyFactory, BossEnemy  # Import BossEnemy and EnemyFactory
 from card import CardFactory, load_cards_from_json, AttackCard, HealCard, ShieldCard  # Import CardFactory, load_cards_from_json, AttackCard, HealCard, ShieldCard
+from assets import backgrounds, portal_images  # Import backgrounds and portal_images
 
 class GameplayScreen:
     def __init__(self, game, player, level=1):
@@ -22,9 +23,12 @@ class GameplayScreen:
         self.action_color = (255, 255, 255)  # Color for the action text
         self.initial_health = player.health  # Store the initial health of the player
 
-        # Load background
-        self.background = pygame.image.load('my-pygame-game/src/assets/game_bg.png')
+        # Load background and portal images from StartingAreaScreen
+        self.backgrounds = backgrounds
+        self.portal_images = portal_images
+        self.background = pygame.image.load(self.backgrounds[self.level - 1])
         self.background = pygame.transform.scale(self.background, (self.game.screen.get_width(), self.game.screen.get_height()))
+        self.portal_image = pygame.image.load(self.portal_images[self.level - 1])
 
         # Load cards from JSON file
         current_dir = os.path.dirname(__file__)
@@ -154,14 +158,18 @@ class GameplayScreen:
         pygame.time.wait(2000)  # Wait for 2 seconds to show the victory message
 
         self.player.health = int(self.player.health + self.initial_health * 0.3)  # Increase player health by 30% of initial health after winning
-        
-        # Increase level and change portal image
+
+        # Increase level and change portal image and background
         self.level += 1
         if self.level > 4:
             self.level = 1  # Reset to level 1 if it exceeds 4
 
+        # Change background and portal image based on the level
+        self.background = pygame.image.load(self.backgrounds[self.level - 1])
+        self.portal_image = pygame.image.load(self.portal_images[self.level - 1])
+
         # After winning, switch back to the starting area screen
-        from screens.starting_area_screen import StartingAreaScreen
+        from screens.starting_area_screen import StartingAreaScreen  # Local import to avoid circular dependency
         self.game.change_screen(StartingAreaScreen(self.game, self.game.selected_player, self.level))  # Switch back to StartingAreaScreen with updated level
 
     def create_enemy(self):
@@ -183,9 +191,18 @@ class GameplayScreen:
 
     def create_boss(self):
         """Create a boss enemy for the final round."""
-        boss_data = EnemyFactory.BOSS_ENEMY_DATA["boss"]
-        image_path, size = boss_data
-        boss = BossEnemy(800, 450, speed=1, image_path=image_path, size=size, health=50)  # Boss with custom stats
+        if self.level == 1:
+            boss_type = "Goblin_boss"
+        elif self.level == 2:
+            boss_type = "skeleton_dragon"
+        elif self.level == 3:
+            boss_type = "King"
+        elif self.level == 4:
+            boss_type = "demon_cerberus"
+
+        boss_data = EnemyFactory.BOSS_ENEMY_DATA[boss_type]
+        image_path, size, boss_class = boss_data
+        boss = boss_class(800, 450, speed=1, image_path=image_path, size=size)
         boss.rect = boss.image.get_rect()  # Ensure the rect is set correctly
         boss.rect.bottom = self.game.screen.get_height()  # Position boss at the bottom
         boss.rect.x = self.game.screen.get_width() - 250  # Position boss on the right side
@@ -238,7 +255,7 @@ class GameplayScreen:
 
         action = random.choice(["attack", "heal"])
         if action == "attack":
-            damage = random.randint(1, 5)  # Random damage value
+            damage = self.enemy.attack  # Use the attack attribute
             if self.player.shield > 0:
                 if damage > self.player.shield:
                     remaining_damage = damage - self.player.shield
@@ -274,7 +291,7 @@ class GameplayScreen:
         self.player.health = self.initial_health
 
         # After losing, switch back to the starting area screen
-        from screens.starting_area_screen import StartingAreaScreen
+        from screens.starting_area_screen import StartingAreaScreen  # Local import to avoid circular dependency
         self.game.change_screen(StartingAreaScreen(self.game, self.game.selected_player))  # Switch back to StartingAreaScreen
 
     def run(self):
