@@ -13,7 +13,7 @@ class GameplayScreen:
         self.level = level  # Add level attribute
         self.player.image = pygame.transform.scale(self.player.image, (350, 350))  # Increase player size
         self.player.rect = self.player.image.get_rect()
-        self.player.rect.bottom = self.game.screen.get_height()  # Position player at the bottom
+        self.player.rect.y = self.game.screen.get_height() - 400   # Position player at the bottom
         self.player.rect.x = 100  # Position player on the left side
         self.round = 1  # Start at round 1
         self.max_rounds = 5  # Total number of rounds before boss
@@ -183,7 +183,8 @@ class GameplayScreen:
         elif self.level == 4:
             enemy_type = random.randint(10, 12)  # Random enemy type for level 4
 
-        enemy = EnemyFactory.create_enemy(enemy_type, 800, 550, speed=random.randint(1, 3))
+        enemy = EnemyFactory.create_enemy(enemy_type, 800, 420, speed=random.randint(1, 3))
+        enemy.image = pygame.transform.scale(enemy.image, (350, 350))
         enemy.rect = enemy.image.get_rect()  # Ensure the rect is set correctly
         enemy.rect.bottom = self.game.screen.get_height()  # Position enemy at the bottom
         enemy.rect.x = self.game.screen.get_width() - 250  # Position enemy on the right side
@@ -202,7 +203,7 @@ class GameplayScreen:
 
         boss_data = EnemyFactory.BOSS_ENEMY_DATA[boss_type]
         image_path, size, boss_class = boss_data
-        boss = boss_class(800, 450, speed=1, image_path=image_path, size=size)
+        boss = boss_class(800, 380, speed=1, image_path=image_path, size=size)
         boss.rect = boss.image.get_rect()  # Ensure the rect is set correctly
         boss.rect.bottom = self.game.screen.get_height()  # Position boss at the bottom
         boss.rect.x = self.game.screen.get_width() - 250  # Position boss on the right side
