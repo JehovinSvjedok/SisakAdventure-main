@@ -70,5 +70,5 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 >>>>>>> 02a25cb72fe52cec8076667b1ce05b74d3cb43a0
 >>>>>>
 >>>>>>
-UML Diagram For The Game
+## UML Diagram For The Game
 ![UML](https://github.com/user-attachments/assets/7e317674-8cf3-41d0-acad-3bd6f491e1d1)
