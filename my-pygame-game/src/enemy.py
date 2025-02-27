@@ -81,7 +81,7 @@ class EnemyType4(Enemy):
         # Implement movement or behavior for EnemyType4
         pass
 
-@add_attributes(attack=10, health=100, heal_amount=5)
+@add_attributes(attack=6, health=100, heal_amount=5)
 class GoblinBoss(BossEnemy):
     type = "Goblin_boss"
 
@@ -89,7 +89,7 @@ class GoblinBoss(BossEnemy):
         # Implement movement or behavior for GoblinBoss
         pass
 
-@add_attributes(attack=15, health=150, heal_amount=5)
+@add_attributes(attack=8, health=150, heal_amount=5)
 class SkeletonDragon(BossEnemy):
     type = "skeleton_dragon"
 
@@ -97,7 +97,7 @@ class SkeletonDragon(BossEnemy):
         # Implement movement or behavior for SkeletonDragon
         pass
 
-@add_attributes(attack=20, health=200, heal_amount=30)
+@add_attributes(attack=10, health=200, heal_amount=5)
 class King(BossEnemy):
     type = "King"
 
@@ -105,7 +105,7 @@ class King(BossEnemy):
         # Implement movement or behavior for King
         pass
 
-@add_attributes(attack=25, health=250, heal_amount=35)
+@add_attributes(attack=15, health=250, heal_amount=10)
 class DemonCerberus(BossEnemy):
     type = "demon_cerberus"
 
