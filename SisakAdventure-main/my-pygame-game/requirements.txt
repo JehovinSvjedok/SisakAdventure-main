@@ -1,4 +1,0 @@
-Pygame
-numpy
-pygame-menu
-```
