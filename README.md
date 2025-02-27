@@ -64,10 +64,6 @@ my-pygame-game
 ## Contributing
 Feel free to submit issues or pull requests if you would like to contribute to the project. 
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-=======
->>>>>>> 02a25cb72fe52cec8076667b1ce05b74d3cb43a0
 >>>>>>
 >>>>>>
 ## UML Diagram For The Game
