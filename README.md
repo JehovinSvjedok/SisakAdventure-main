@@ -1,8 +1,13 @@
-
 # Sisak Adventure
 
 ## Overview
 This project is a card-based roguelike game inspired by "Slay the Spire". Players will navigate through various screens to select characters, edit their decks, and engage in gameplay.
+
+## Team
+This project was developed by:
+- **Toni Jelavić**: Worked on the main game logic and player interactions.
+- **Luka Leon Grubišić**: Focused on the design and implementation of the game screens.
+- **Lovro Borić**: Handled the asset creation and integration, including images and sounds.
 
 ## Project Structure
 ```
@@ -36,24 +41,7 @@ my-pygame-game
 - **saved_hand.json**: A JSON file that stores the saved hand of cards.
 - **Slike/**: A directory containing images and music used in the game.
 
-## Setup Instructions
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/my-pygame-game.git
 
-## Setup Instructions
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/my-pygame-game.git
-   ```
-2. Navigate to the project directory:
-   ```
-   cd my-pygame-game
-   ```
-3. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
 
 ## Gameplay Mechanics
 - **Start Screen**: Players can start the game and navigate to the character selection screen.
@@ -64,7 +52,4 @@ my-pygame-game
 ## Contributing
 Feel free to submit issues or pull requests if you would like to contribute to the project. 
 
->>>>>>
->>>>>>
-## UML Diagram For The Game
-![UML](https://github.com/user-attachments/assets/7e317674-8cf3-41d0-acad-3bd6f491e1d1)
+
